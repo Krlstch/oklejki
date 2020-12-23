@@ -7,7 +7,7 @@ cell_color_height = 30
 cell_width = 60
 cell_height = 50
 cell_border = 1
-cell_clear_width = 50
+cell_clear_width = 60
 cell_clear_height = 30
 cell_clear_upper_margin = 10
 cell_clear_lower_margin = 10
@@ -33,18 +33,16 @@ def draw_background(game_display):
     for i in range(1, 9):
         size = font.size(str(i))
         num = font.render(str(i), 1, (0, 0, 0), (255, 255, 255))
-        game_display.blit(num, ((cell_number_width - size[0]) / 2,
-                                cell_color_height + cell_border + (i - 1) * (cell_height + cell_border) + (
-                                        cell_height - size[1]) / 2))
+        game_display.blit(num, (int((cell_number_width - size[0]) / 2),
+                                int(cell_color_height + cell_border + (i - 1) * (cell_height + cell_border) + (cell_height - size[1]) / 2)))
 
     # colors
     font = pygame.font.SysFont("Arial", 12)
     for i, color in enumerate(("Niebieski", "Czerwony", "Żółty")):
         size = font.size(color)
         col = font.render(color, 1, (0, 0, 0), (255, 255, 255))
-        game_display.blit(col, (
-            cell_number_width + cell_border + i * (cell_width + cell_border) + (cell_width - size[0]) / 2,
-            (cell_color_height - size[1]) / 2))
+        game_display.blit(col, (int(cell_number_width + cell_border + i * (cell_width + cell_border) + (cell_width - size[0]) / 2),
+                                int((cell_color_height - size[1]) / 2)))
 
     # clear button
     rect = (cell_number_width + 3 * (cell_width + cell_border) - cell_clear_right_margin - cell_clear_width,
@@ -56,11 +54,8 @@ def draw_background(game_display):
     font = pygame.font.SysFont("Arial", 12)
     size = font.size("Wyczyść")
     clear = font.render("Wyczyść", 1, (0, 0, 0), (255, 255, 255))
-    game_display.blit(clear, (
-        cell_number_width + 3 * (cell_width + cell_border) - cell_clear_right_margin - cell_clear_width + (
-                cell_clear_width - size[0]) / 2,
-        cell_color_height + 8 * (cell_height + cell_border) + cell_border + cell_clear_upper_margin + (
-                cell_clear_height - size[1]) / 2))
+    game_display.blit(clear, (int(cell_number_width + 3 * (cell_width + cell_border) - cell_clear_right_margin - cell_clear_width + (cell_clear_width - size[0]) / 2),
+                              int(cell_color_height + 8 * (cell_height + cell_border) + cell_border + cell_clear_upper_margin + (cell_clear_height - size[1]) / 2)))
 
     pygame.display.update()
 
@@ -88,10 +83,10 @@ def update_cell(tile_x, tile_y, cell, game_display):
     if cell == 1:
         # draw X
         size = int(0.6 * min(cell_width, cell_height))
-        up = cell_color_height + tile_y * (cell_height + cell_border) + cell_border + (cell_height - size) / 2
-        down = cell_color_height + tile_y * (cell_height + cell_border) + cell_border + (cell_height + size) / 2
-        left = cell_number_width + tile_x * (cell_width + cell_border) + cell_border + (cell_width - size) / 2
-        right = cell_number_width + tile_x * (cell_width + cell_border) + cell_border + (cell_width + size) / 2
+        up = cell_color_height + tile_y * (cell_height + cell_border) + cell_border + int((cell_height - size) / 2)
+        down = cell_color_height + tile_y * (cell_height + cell_border) + cell_border + int((cell_height + size) / 2)
+        left = cell_number_width + tile_x * (cell_width + cell_border) + cell_border + int((cell_width - size) / 2)
+        right = cell_number_width + tile_x * (cell_width + cell_border) + cell_border + int((cell_width + size) / 2)
 
         pygame.draw.line(game_display, (0, 0, 0), (left, up), (right, down), 4)
         pygame.draw.line(game_display, (0, 0, 0), (left, down), (right, up), 4)
@@ -107,8 +102,8 @@ def update_cell(tile_x, tile_y, cell, game_display):
 
 
 def key_pressed(i, position, cells, game_display):
-    tile_x = math.floor((position[0] - cell_number_width) / cell_width)
-    tile_y = math.floor((position[1] - cell_color_height) / cell_height)
+    tile_x = math.floor((position[0] - cell_number_width) / (cell_width + cell_border))
+    tile_y = math.floor((position[1] - cell_color_height) / (cell_height + cell_border))
 
     if 0 <= tile_x <= 2 and 0 <= tile_y <= 7:
         if cells[tile_x][tile_y] == i + 1:
@@ -116,7 +111,7 @@ def key_pressed(i, position, cells, game_display):
         else:
             cells[tile_x][tile_y] = i + 1
         update_cell(tile_x, tile_y, cells[tile_x][tile_y], game_display)
-        print("x:{0}\ty:{1}".format(tile_x, tile_y))
+        # print("x:{0}\ty:{1}".format(tile_x, tile_y))
 
     else:
         if cell_number_width + 3 * (cell_width + cell_border) - cell_clear_right_margin - cell_clear_width <= position[0] <= \
@@ -127,7 +122,7 @@ def key_pressed(i, position, cells, game_display):
                 for j in range(8):
                     cells[i][j] = 0
             clear_cells(game_display)
-            print("clear")
+            # print("clear")
 
 
 def get_input(buttons_pressed, cells, game_display):
